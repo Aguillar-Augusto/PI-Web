@@ -10,3 +10,4 @@ module = "phpix/phpix-84-64bit:phpix"
 runner = "wasi"
 [command.annotations.wasi]
 main-args = ["-t", "/app/public", "-S", "localhost:8080"]
+

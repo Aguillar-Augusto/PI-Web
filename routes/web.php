@@ -34,3 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/perfil/foto', [PerfilController::class, 'atualizarFoto'])->name('perfil.atualizarFoto');
     Route::put('/perfil/bio', [PerfilController::class, 'atualizarBio'])->name('perfil.atualizarBio');
 });
+
+Route::get('/criar-link', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Link criado com sucesso!';
+});
