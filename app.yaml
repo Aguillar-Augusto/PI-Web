@@ -1,0 +1,20 @@
+kind: wasmer.io/App.v0
+name: pi-web
+owner: aguillar-augusto
+package: .
+env:
+  APP_ENV: staging
+  APP_DEBUG: "true"
+  APP_KEY: "base64:iPsY7gODYfSx7qlLRBP5ldpv+qG6jTPZIPz8ei/GK/0="
+  DB_CONNECTION: mysql
+  SESSION_DRIVER: database
+  CACHE_STORE: database
+  QUEUE_CONNECTION: sync
+  LOG_CHANNEL: stderr
+capabilities:
+  database:
+    engine: mysql
+locality:
+  regions:
+    - us-losa1
+app_id: da_RjPIgtQUQOEb

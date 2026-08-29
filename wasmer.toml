@@ -1,0 +1,12 @@
+[dependencies]
+"phpix/phpix-84-64bit" = "=0.3.0-rc.5"
+
+[fs]
+"/app/" = "."
+
+[[command]]
+name = "run"
+module = "phpix/phpix-84-64bit:phpix"
+runner = "wasi"
+[command.annotations.wasi]
+main-args = ["-t", "/app/public", "-S", "localhost:8080"]

@@ -6,7 +6,6 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-2 text-center text-md-start">
-                    {{-- O botão da foto que criamos anteriormente continua aqui --}}
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalFotoPerfil">
                         @if ($user->foto_perfil_path)
                             <img src="{{ asset('storage/' . $user->foto_perfil_path) }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
@@ -19,7 +18,6 @@
                     <h2 class="fw-bold mb-0">{{ $user->name }}</h2>
                     <p class="text-muted mb-1">{{ $user->email }}</p>
                     
-                    {{-- A BIO COM O ÍCONE DE LÁPIS --}}
                     <div class="d-flex align-items-center justify-content-center justify-content-md-start">
                         <p class="mb-0 me-2">{{ $user->bio ?? 'Escrevendo no Papiro Digital!' }}</p>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalBio" class="text-brand">
@@ -33,7 +31,6 @@
         </div>
     </div>
     
-    {{-- CORREÇÃO DAS CAPAS NOS LIVROS DO PERFIL --}}
     @foreach ($secoes as $secao)
         <div class="container mt-5">
             <div class="mb-5">
@@ -43,7 +40,6 @@
                 <div class="scrolling-wrapper" style="cursor: grab;">
                     @forelse ($secao['livros'] as $livro)
                         <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="story-card">
-                            {{-- Lógica da capa aplicada aqui --}}
                             @if ($livro->capa_path)
                                 <img src="{{ asset('storage/' . $livro->capa_path) }}" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
                             @else
@@ -59,7 +55,6 @@
         </div>
     @endforeach
 
-    {{-- MODAL PARA EDITAR A BIO --}}
     <div class="modal fade" id="modalBio" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -93,7 +88,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    {{-- Formulário aponta para uma nova rota e envia arquivos --}}
                     <form id="formFotoPerfil" action="{{ route('perfil.atualizarFoto') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')

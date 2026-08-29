@@ -37,7 +37,6 @@ class LivroController extends Controller
         Livro::create([
             'name' => $validated['name'],
             'autor' => Auth::user()->name,
-            'password' => '', 
             'genero1' => $validated['genero1'],
             'genero2' => $validated['genero2'] ?? '',
             'sinopse' => $validated['sinopse'],

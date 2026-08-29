@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('autor');
-            //$table->string('password');
             $table->string('genero1');
             $table->string('genero2');
             $table->text('sinopse');
