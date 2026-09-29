@@ -4,23 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Cloudinary\Cloudinary;
 
 class PerfilController extends Controller
 {
-    // Método para exibir o perfil do usuário logado
     public function index()
     {
-        // Pega o usuário logado
         $user = Auth::user();
 
-        // Se o usuário não estiver logado, redireciona para login
         if (!$user) {
             return redirect()->route('login');
         }
 
         $secoes = [];
 
-        // 1. Carrega os "Meus Livros" (Livros que o usuário cadastrou) usando o relacionamento[cite: 2]
         $meusLivros = $user->livrosCadastrados()->take(10)->get();
         if ($meusLivros->isNotEmpty()) {
             $secoes[] = [
@@ -29,7 +26,6 @@ class PerfilController extends Controller
             ];
         }
 
-        // 2. Carrega os "Favoritos" do usuário logado[cite: 3]
         $favoritos = $user->livrosFavoritos()->take(10)->get();
         if ($favoritos->isNotEmpty()) {
             $secoes[] = [
@@ -38,7 +34,6 @@ class PerfilController extends Controller
             ];
         }
 
-        // Retorna a view de perfil passando o usuário e as seções
         return view('pages.perfil', compact('user', 'secoes'));
     }
 
@@ -51,14 +46,13 @@ class PerfilController extends Controller
         $user = Auth::user();
 
         if ($request->hasFile('foto_perfil')) {
+            $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
             
-            if ($user->foto_perfil_path) {
-                Storage::disk('public')->delete($user->foto_perfil_path);
-            }
+            $uploadFoto = $cloudinary->uploadApi()->upload($request->file('foto_perfil')->getRealPath(), [
+                'folder' => 'usuarios/fotos'
+            ]);
 
-            $caminhoFoto = $request->file('foto_perfil')->store('usuarios/fotos', 'public');
-
-            $user->foto_perfil_path = $caminhoFoto;
+            $user->foto_perfil_path = $uploadFoto['secure_url'];
             $user->dataedicao = now(); 
             $user->save();
         }
@@ -73,5 +67,4 @@ class PerfilController extends Controller
         $user->save();
         return back()->with('sucesso', 'Bio atualizada com sucesso!');
     }
-
 }

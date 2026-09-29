@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Cloudinary\Cloudinary;
 use App\Models\Livro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage; 
 
 class LivroController extends Controller
 {
@@ -23,16 +23,25 @@ class LivroController extends Controller
             'genero1' => 'required|string',
             'genero2' => 'nullable|string',
             'sinopse' => 'required|string',
-            'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Máximo 2MB
-            'pdf' => 'required|mimes:pdf|max:10000', // Máximo 10MB
+            'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'pdf' => 'required|mimes:pdf|max:10000',
         ]);
 
+        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
         $caminhoCapa = null;
+
         if ($request->hasFile('capa')) {
-            $caminhoCapa = $request->file('capa')->store('livros/capas', 'public');
+            $uploadCapa = $cloudinary->uploadApi()->upload($request->file('capa')->getRealPath(), [
+                'folder' => 'livros/capas'
+            ]);
+            $caminhoCapa = $uploadCapa['secure_url'];
         }
 
-        $caminhoPdf = $request->file('pdf')->store('livros/pdfs', 'public');
+        $uploadPdf = $cloudinary->uploadApi()->upload($request->file('pdf')->getRealPath(), [
+            'folder' => 'livros/pdfs',
+            'resource_type' => 'auto'
+        ]);
+        $caminhoPdf = $uploadPdf['secure_url'];
 
         Livro::create([
             'name' => $validated['name'],
@@ -51,7 +60,6 @@ class LivroController extends Controller
 
     public function pesquisar(Request $request)
     {
-
         $termo = $request->input('busca');
 
         if (!$termo) {
@@ -87,25 +95,27 @@ class LivroController extends Controller
             'pdf' => 'nullable|mimes:pdf|max:10000',
         ]);
 
-        // 2. Atualiza os textos
         $livro->name = $validated['name'];
         $livro->genero1 = $validated['genero1'];
         $livro->genero2 = $validated['genero2'] ?? '';
         $livro->sinopse = $validated['sinopse'];
         $livro->dataatualizacao = now();
 
+        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+
         if ($request->hasFile('capa')) {
-            if ($livro->capa_path) {
-                Storage::disk('public')->delete($livro->capa_path);
-            }
-            $livro->capa_path = $request->file('capa')->store('livros/capas', 'public');
+            $uploadCapa = $cloudinary->uploadApi()->upload($request->file('capa')->getRealPath(), [
+                'folder' => 'livros/capas'
+            ]);
+            $livro->capa_path = $uploadCapa['secure_url'];
         }
 
         if ($request->hasFile('pdf')) {
-            if ($livro->pdf_path) {
-                Storage::disk('public')->delete($livro->pdf_path);
-            }
-            $livro->pdf_path = $request->file('pdf')->store('livros/pdfs', 'public');
+            $uploadPdf = $cloudinary->uploadApi()->upload($request->file('pdf')->getRealPath(), [
+                'folder' => 'livros/pdfs',
+                'resource_type' => 'auto'
+            ]);
+            $livro->pdf_path = $uploadPdf['secure_url'];
         }
 
         $livro->save();
@@ -119,13 +129,6 @@ class LivroController extends Controller
 
         if ($livro->users_id !== Auth::id()) {
             abort(403, 'Você não tem permissão para apagar este livro.');
-        }
-
-        if ($livro->capa_path) {
-            Storage::disk('public')->delete($livro->capa_path);
-        }
-        if ($livro->pdf_path) {
-            Storage::disk('public')->delete($livro->pdf_path);
         }
 
         $livro->delete();
