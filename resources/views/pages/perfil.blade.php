@@ -8,7 +8,7 @@
                 <div class="col-md-2 text-center text-md-start">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalFotoPerfil">
                         @if ($user->foto_perfil_path)
-                            <img src="{{ asset('storage/' . $user->foto_perfil_path) }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="{{ $user->foto_perfil_path }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
                         @else
                             <img src="https://picsum.photos/seed/user{{ $user->id }}/120/120" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
                         @endif
@@ -41,7 +41,7 @@
                     @forelse ($secao['livros'] as $livro)
                         <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="story-card">
                             @if ($livro->capa_path)
-                                <img src="{{ asset('storage/' . $livro->capa_path) }}" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
+                                <img src="{{ $livro->capa_path }}" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
                             @else
                                 <img src="https://picsum.photos/seed/livro{{ $livro->id }}/200/300" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
                             @endif

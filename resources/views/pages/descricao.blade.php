@@ -43,13 +43,13 @@
     <div class="row">
         <div class="col-md-3 text-center mb-4">
             @if ($livro->capa_path)
-                <img src="{{ asset('storage/' . $livro->capa_path) }}" alt="Capa" class="img-fluid rounded shadow-sm mb-3" style="width: 300px; height: 450px; object-fit: cover;">
+                <img src="{{ $livro->capa }}" alt="Capa" class="img-fluid rounded shadow-sm mb-3" style="width: 300px; height: 450px; object-fit: cover;">
             @else
                 <img src="https://picsum.photos/seed/livro{{ $livro->id }}/300/450" alt="Capa Padrão" class="img-fluid rounded shadow-sm mb-3" style="width: 300px; height: 450px; object-fit: cover;">
             @endif
 
             @if($livro->pdf_path)
-                <a href="{{ asset('storage/' . $livro->pdf_path) }}" download="{{ $livro->name }}.pdf" class="btn btn-brand w-100 py-2 fs-5 mb-2">
+                <a href="{{ $livro->arquivo }}" target="_blank" download="{{ $livro->name }}.pdf" class="btn btn-brand w-100 py-2 fs-5 mb-2">
                     Baixar livro
                 </a>
             @else
