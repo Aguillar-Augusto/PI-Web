@@ -19,7 +19,7 @@
                 @forelse ($livros as $livro)
                     <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-bottom">
                         @if ($livro->capa_path)
-                            <img src="{{ $livro->capa }}" class="rounded shadow-sm" alt="Capa do Livro" style="width: 50px; height: 75px; object-fit: cover;">
+                            <img src="{{ $livro->capa_path }}" class="rounded shadow-sm" alt="Capa do Livro" style="width: 50px; height: 75px; object-fit: cover;">
                         @else
                             <img src="https://picsum.photos/seed/livro{{ $livro->id }}/50/75" class="rounded shadow-sm" alt="Capa do Livro" style="width: 50px; height: 75px; object-fit: cover;">
                         @endif
