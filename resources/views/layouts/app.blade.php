@@ -95,6 +95,26 @@
         </div>
     </nav>
 
+    <!-- Alertas de Feedback -->
+    <div class="container mt-3">
+        {{-- Alerta de Sucesso --}}
+        @if (session('sucesso'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('sucesso') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        {{-- Alerta de Erro Genérico (Opcional, mas recomendado) --}}
+        @if (session('erro'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('erro') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
+    
+
     <main>
         @yield('conteudo')
     </main>
