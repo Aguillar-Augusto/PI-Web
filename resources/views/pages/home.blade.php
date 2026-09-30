@@ -12,7 +12,7 @@
                         <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="story-card">
                             
                             @if ($livro->capa_path)
-                                <img src="{{ asset('storage/' . $livro->capa_path) }}" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
+                                <img src="{{ $livro->capa_path }}" class="story-cover" style="width: 150px; height: 220px; object-fit: cover;">
                             @else
                                 <img src="https://picsum.photos/seed/livro{{ $livro->id }}/200/300" class="story-cover">
                             @endif
