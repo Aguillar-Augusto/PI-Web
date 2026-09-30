@@ -34,7 +34,7 @@
 
 <div class="container mt-5 mb-5">
 
-    <a href="{{ url()->previous() }}" class="text-dark me-3 mb-4 d-inline-block">
+    <a href="{{ route('home') }}" class="text-dark me-3 mb-4 d-inline-block">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
         </svg>
