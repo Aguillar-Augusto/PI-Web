@@ -37,7 +37,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="fw-bold mb-0">{{ $secao['titulo'] }}</h4>
                 </div>
-                <div class="scrolling-wrapper" style="cursor: grab;">
+                <div class="scrolling-wrapper">
                     @forelse ($secao['livros'] as $livro)
                         <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="story-card">
                             @if ($livro->capa_path)
