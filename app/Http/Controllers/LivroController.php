@@ -25,7 +25,7 @@ class LivroController extends Controller
             'genero2' => 'nullable|string',
             'sinopse' => 'required|string',
             'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'pdf' => 'required|mimes:pdf|max:10000',
+            'pdf' => 'required|mimes:pdf|max:20480',
         ]);
 
         $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
@@ -96,7 +96,7 @@ class LivroController extends Controller
             'genero2' => 'nullable|string',
             'sinopse' => 'required|string',
             'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'pdf' => 'nullable|mimes:pdf|max:10000',
+            'pdf' => 'nullable|mimes:pdf|max:20480',
         ]);
 
         $livro->name = $validated['name'];
