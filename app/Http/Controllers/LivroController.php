@@ -96,7 +96,7 @@ class LivroController extends Controller
             'genero2' => 'nullable|string',
             'sinopse' => 'required|string',
             'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'pdf' => 'nullable|mimes:pdf|max:35840',
+            'pdf' => 'nullable|mimes:pdf|max:51200',
         ]);
 
         $livro->name = $validated['name'];
