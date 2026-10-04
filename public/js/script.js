@@ -1,35 +1,12 @@
+// Ativa o scroll horizontal com a roda do rato na lista de livros
+const scrollWrappers = document.querySelectorAll('.scrolling-wrapper');
 
-// script.js
-document.addEventListener('DOMContentLoaded', () => {
-    const sliders = document.querySelectorAll('.scrolling-wrapper');
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    sliders.forEach(slider => {
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.style.cursor = 'grabbing';
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.style.cursor = 'grab';
-        });
-        
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.style.cursor = 'grab';
-        });
-        
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2;
-            slider.scrollLeft = scrollLeft - walk;
-        });
+scrollWrappers.forEach(wrapper => {
+    wrapper.addEventListener('wheel', function(e) {
+        // Se a roda do rato se mover na vertical, transforma em movimento horizontal
+        if (e.deltaY !== 0) {
+            e.preventDefault(); // Evita que a página inteira desça
+            wrapper.scrollLeft += e.deltaY;
+        }
     });
 });
