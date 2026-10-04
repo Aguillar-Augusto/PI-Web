@@ -7,7 +7,7 @@
                     <h4 class="fw-bold mb-0">{{ $secao['titulo'] }}</h4>
                     <a href="{{ route('lista.genero', ['genero' => $secao['titulo']]) }}" class="text-brand text-decoration-none fw-bold small">Estender lista</a>
                 </div>
-                <div class="scrolling-wrapper" style="cursor: grab;">
+                <div class="scrolling-wrapper">
                     @foreach ($secao['livros'] as $livro)
                         <a href="{{ route('descricao', ['id' => $livro->id]) }}" class="story-card">
                             
