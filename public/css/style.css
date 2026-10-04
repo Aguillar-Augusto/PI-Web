@@ -5,13 +5,11 @@ body {
     background-color: #ffffff;
 }
 
-/* Cor principal modificada para Verde Leve/Esmeralda */
 .text-brand { color: #27ae60; }
 .bg-brand { background-color: #27ae60; color: white; }
 .btn-brand { background-color: #27ae60; color: white; font-weight: bold; border-radius: 20px; border: none; }
 .btn-brand:hover { background-color: #219150; color: white; }
 
-/* Configuração da "Prateleira" com rolagem horizontal */
 .scrolling-wrapper {
     display: flex;
     flex-wrap: nowrap;
@@ -19,13 +17,12 @@ body {
     padding-bottom: 1rem;
     gap: 15px;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
 }
 .scrolling-wrapper::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
-/* O Livro (Card) */
 .story-card {
     flex: 0 0 auto;
     width: 140px;

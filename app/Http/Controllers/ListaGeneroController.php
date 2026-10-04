@@ -10,10 +10,14 @@ class ListaGeneroController extends Controller
 {
     public function show($genero)
     {
+        if ((strtolower($genero) === 'favoritos' || strtolower($genero) === 'meus livros') && !Auth::check()) {
+        return redirect()->route('login');
+    }    
+
         if (strtolower($genero) === 'favoritos') {
-            $livros = Auth::check() ? Auth::user()->livrosFavoritos()->paginate(10) : collect();
+            $livros = Auth::check() ? Auth::user()->livrosFavoritos()->paginate(30) : collect();
         } elseif (strtolower($genero) === 'meus livros') {
-            $livros = Auth::check() ? Auth::user()->livrosCadastrados()->paginate(10) : collect();
+            $livros = Auth::check() ? Auth::user()->livrosCadastrados()->paginate(30) : collect();
         } else {
             $livros = Livro::where('genero1', $genero)
                            ->orWhere('genero2', $genero)

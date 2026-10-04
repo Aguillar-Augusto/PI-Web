@@ -3,9 +3,8 @@ const scrollWrappers = document.querySelectorAll('.scrolling-wrapper');
 
 scrollWrappers.forEach(wrapper => {
     wrapper.addEventListener('wheel', function(e) {
-        // Se a roda do rato se mover na vertical, transforma em movimento horizontal
         if (e.deltaY !== 0) {
-            e.preventDefault(); // Evita que a página inteira desça
+            e.preventDefault();
             wrapper.scrollLeft += e.deltaY;
         }
     });
