@@ -1,5 +1,4 @@
 @php
-    // Lista de gêneros declarada dinamicamente para substituir o include estático
     $listaGeneros = [
     "Ação e Aventura",
     "Biografia",
@@ -95,7 +94,6 @@
         </div>
     </nav>
 
-    <!-- Alertas de Feedback -->
     <div class="container mt-3">
         @if (session('sucesso'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -139,19 +137,16 @@
                 </div>
 
                 <div class="modal-body p-4">
-                    {{-- Adicionado Action, Method, Enctype e Token CSRF --}}
                     <form id="formCadastroLivro" action="{{ route('livros.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="titulo" class="form-label small fw-bold">Título da Obra</label>
-                                {{-- Adicionado name="name" --}}
                                 <input type="text" name="name" class="form-control" id="titulo" placeholder="Ex: O Segredo do Papiro" required>
                             </div>
                             
                             <div class="col-md-3 mb-3">
                                 <label for="generoPrincipal" class="form-label small fw-bold">Gênero Principal</label>
-                                {{-- Adicionado name="genero1" --}}
                                 <select class="form-select" name="genero1" id="generoPrincipal" required>
                                     <option value="" selected disabled>Selecione...</option>
                                     @foreach ($listaGeneros as $genero)
@@ -162,7 +157,6 @@
 
                             <div class="col-md-3 mb-3">
                                 <label for="generoSecundario" class="form-label small fw-bold">Gênero Secundário</label>
-                                {{-- Adicionado name="genero2" --}}
                                 <select class="form-select" name="genero2" id="generoSecundario">
                                     <option value="" selected>Nenhum (Opcional)</option>
                                     @foreach ($listaGeneros as $genero)
@@ -174,20 +168,17 @@
 
                         <div class="mb-3">
                             <label for="sinopse" class="form-label small fw-bold">Sinopse</label>
-                            {{-- Adicionado name="sinopse" --}}
                             <textarea class="form-control" name="sinopse" id="sinopse" rows="4" placeholder="Conte um pouco sobre a história..." required></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="capa" class="form-label small fw-bold">Capa do Livro (Imagem)</label>
-                                {{-- Adicionado name="capa" --}}
                                 <input class="form-control" type="file" name="capa" id="capa" accept="image/*">
                                 <div class="form-text">Formatos sugeridos: JPG ou PNG.</div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="pdf" class="form-label small fw-bold">Arquivo da Obra (PDF)</label>
-                                {{-- Adicionado name="pdf" --}}
                                 <input class="form-control border-success" type="file" name="pdf" id="pdf" accept="application/pdf" required>
                                 <div class="form-text text-success">O arquivo deve estar no formato PDF.</div>
                             </div>
@@ -206,7 +197,6 @@
 
                 <div class="modal-footer bg-light border-top-0">
                     <button type="button" class="btn btn-link text-muted text-decoration-none fw-bold" data-bs-dismiss="modal">Cancelar</button>
-                    {{-- Type alterado para submit e onclick removido conforme instrução --}}
                     <button type="submit" form="formCadastroLivro" class="btn btn-brand px-4 rounded-pill shadow-sm">Publicar Obra</button>
                 </div>
             </div>
