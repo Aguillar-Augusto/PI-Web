@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary;
 use App\Models\Livro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class LivroController extends Controller
 {
@@ -41,7 +42,10 @@ class LivroController extends Controller
             'folder' => 'livros/pdfs',
             'resource_type' => 'auto'
         ]);
-        $caminhoPdf = $uploadPdf['secure_url'];
+        $urlOriginal = $uploadPdf['secure_url'];
+        $nomeDoArquivo = Str::slug($validated['name']);
+        $caminhoPdf = str_replace('/upload/', '/upload/fl_attachment:' . $nomeDoArquivo . '/', $urlOriginal);
+        
 
         Livro::create([
             'name' => $validated['name'],
@@ -115,7 +119,10 @@ class LivroController extends Controller
                 'folder' => 'livros/pdfs',
                 'resource_type' => 'auto'
             ]);
-            $livro->pdf_path = $uploadPdf['secure_url'];
+            $urlOriginal = $uploadPdf['secure_url'];
+            $nomeDoArquivo = Str::slug($validated['name']);
+            $caminhoPdf = str_replace('/upload/', '/upload/fl_attachment:' . $nomeDoArquivo . '/', $urlOriginal);
+            $livro->pdf_path = $caminhoPdf;
         }
 
         $livro->save();
