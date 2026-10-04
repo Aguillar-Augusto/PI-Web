@@ -1,3 +1,5 @@
+console.log("O script novo carregou com sucesso!");
+
 // 1. Verifica quando o usuário SELECIONA o arquivo
 document.addEventListener('change', function(e) {
     if (e.target && e.target.name === 'pdf' && e.target.type === 'file') {
