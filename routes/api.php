@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    Route::post('/livros/{id}/favoritar', [LivroController::class, 'favoritar']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
 });

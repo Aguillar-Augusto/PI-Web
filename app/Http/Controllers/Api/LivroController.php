@@ -14,4 +14,13 @@ class LivroController extends Controller
         
         return response()->json($livros);
     }
+
+    public function favoritar(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $user->livrosFavoritos()->toggle($id);
+
+        return response()->json(['message' => 'Status de favorito atualizado com sucesso!']);
+    }
 }
