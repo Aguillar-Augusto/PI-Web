@@ -23,4 +23,16 @@ class LivroController extends Controller
 
         return response()->json(['message' => 'Status de favorito atualizado com sucesso!']);
     }
+
+    public function favoritos(Request $request)
+    {
+        $livros = $request->user()->livrosFavoritos()->orderBy('dataupload', 'desc')->get();
+        return response()->json($livros);
+    }
+
+    public function meusLivros(Request $request)
+    {
+        $livros = $request->user()->livrosCadastrados()->orderBy('dataupload', 'desc')->get();
+        return response()->json($livros);
+    }
 }
