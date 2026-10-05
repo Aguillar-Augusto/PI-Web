@@ -38,7 +38,7 @@ class LivroController extends Controller
 
     public function checkFavorito(Request $request, $id)
     {
-        $isFavorito = $request->user()->livrosFavoritos()->where('livro_id', $id)->exists();
+        $isFavorito = $request->user()->livrosFavoritos()->whereKey($id)->exists();
         
         return response()->json(['favorito' => $isFavorito]);
     }
