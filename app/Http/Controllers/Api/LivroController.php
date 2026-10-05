@@ -35,4 +35,11 @@ class LivroController extends Controller
         $livros = $request->user()->livrosCadastrados()->orderBy('dataupload', 'desc')->get();
         return response()->json($livros);
     }
+
+    public function checkFavorito(Request $request, $id)
+    {
+        $isFavorito = $request->user()->livrosFavoritos()->where('livro_id', $id)->exists();
+        
+        return response()->json(['favorito' => $isFavorito]);
+    }
 }
