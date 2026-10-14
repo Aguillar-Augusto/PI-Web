@@ -1,4 +1,3 @@
-// Ativa o scroll horizontal com a roda do rato na lista de livros
 const scrollWrappers = document.querySelectorAll('.scrolling-wrapper');
 
 scrollWrappers.forEach(wrapper => {

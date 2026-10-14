@@ -45,6 +45,7 @@ class HomeController extends Controller
             "Poesia",
             "Realismo Mágico",
             "Religião e Espiritualidade",
+            "Filosofia",
             "Romance",
             "Suspense/Thriller",
             "Tragédia",
