@@ -36,6 +36,7 @@
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="fw-bold mb-0">{{ $secao['titulo'] }}</h4>
+                    <a href="{{ route('lista.genero', ['genero' => $secao['titulo']]) }}" class="text-brand text-decoration-none fw-bold small">Ver Mais</a>
                 </div>
                 <div class="scrolling-wrapper">
                     @forelse ($secao['livros'] as $livro)
