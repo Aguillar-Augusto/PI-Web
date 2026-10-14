@@ -25,6 +25,7 @@
     "Poesia",
     "Realismo Mágico",
     "Religião e Espiritualidade",
+    "Filosodia",
     "Romance",
     "Suspense/Thriller",
     "Tragédia",
