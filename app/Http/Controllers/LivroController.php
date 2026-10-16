@@ -1,12 +1,14 @@
 <?php
+// app/Http/Controllers/LivroController.php
 
 namespace App\Http\Controllers;
 
-use Cloudinary\Cloudinary;
 use App\Models\Livro;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Throwable;
 
 class LivroController extends Controller
 {
@@ -14,75 +16,75 @@ class LivroController extends Controller
     {
         $livro = Livro::findOrFail($id);
 
-        return view('pages.descricao', compact('livro'));
+        $isFavorito = Auth::check()
+            ? Auth::user()->livrosFavoritos()->whereKey($livro->id)->exists()
+            : false;
+
+        return view('pages.descricao', compact('livro', 'isFavorito'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, CloudinaryService $cloudinaryService)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'genero1' => 'required|string',
-            'genero2' => 'nullable|string',
-            'sinopse' => 'required|string',
-            'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'pdf' => 'required|mimes:pdf|max:10240',
+            'name' => ['required', 'string', 'max:255'],
+            'genero1' => ['required', 'string', Rule::in(Livro::GENEROS)],
+            'genero2' => ['nullable', 'string', Rule::in(Livro::GENEROS)],
+            'sinopse' => ['required', 'string'],
+            'capa' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'pdf' => ['required', 'file', 'mimes:pdf', 'max:10240'],
         ]);
 
-        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
-        $caminhoCapa = null;
+        try {
+            $caminhoCapa = $request->hasFile('capa')
+                ? $cloudinaryService->uploadImagem($request->file('capa'), 'livros/capas')
+                : null;
 
-        if ($request->hasFile('capa')) {
-            $uploadCapa = $cloudinary->uploadApi()->upload($request->file('capa')->getRealPath(), [
-                'folder' => 'livros/capas'
+            $caminhoPdf = $cloudinaryService->uploadPdf($request->file('pdf'), $validated['name']);
+
+            Livro::create([
+                'name' => $validated['name'],
+                'autor' => Auth::user()->name,
+                'genero1' => $validated['genero1'],
+                'genero2' => $validated['genero2'] ?? '',
+                'sinopse' => $validated['sinopse'],
+                'capa_path' => $caminhoCapa,
+                'pdf_path' => $caminhoPdf,
+                'dataupload' => now(),
+                'users_id' => Auth::id(),
             ]);
-            $caminhoCapa = $uploadCapa['secure_url'];
+
+            return back()->with('sucesso', 'Obra publicada com sucesso!');
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('erro', 'Falha ao enviar os arquivos da obra. Tente novamente.');
         }
-
-        $uploadPdf = $cloudinary->uploadApi()->upload($request->file('pdf')->getRealPath(), [
-            'folder' => 'livros/pdfs',
-            'resource_type' => 'auto'
-        ]);
-        $urlOriginal = $uploadPdf['secure_url'];
-        $nomeDoArquivo = Str::slug($validated['name']);
-        $caminhoPdf = str_replace('/upload/', '/upload/fl_attachment:' . $nomeDoArquivo . '/', $urlOriginal);
-        
-
-        Livro::create([
-            'name' => $validated['name'],
-            'autor' => Auth::user()->name,
-            'genero1' => $validated['genero1'],
-            'genero2' => $validated['genero2'] ?? '',
-            'sinopse' => $validated['sinopse'],
-            'capa_path' => $caminhoCapa,
-            'pdf_path' => $caminhoPdf, 
-            'dataupload' => now(),
-            'users_id' => Auth::id(),
-        ]);
-
-        return back()->with('sucesso', 'Obra publicada com sucesso!');
     }
 
     public function pesquisar(Request $request)
     {
-        $termo = $request->input('busca');
+        $termo = trim((string) $request->input('busca', ''));
 
-        if (!$termo) {
+        if ($termo === '') {
             return redirect()->route('home');
         }
 
-        $livros = Livro::where('name', 'LIKE', '%' . $termo . '%')
-                    ->orWhere('autor', 'LIKE', '%' . $termo . '%')
-                    ->orWhere('genero1', 'LIKE', '%' . $termo . '%')
-                    ->orWhere('genero2', 'LIKE', '%' . $termo . '%')
-                    ->paginate(10);
+        $livros = Livro::where(function ($query) use ($termo) {
+                $query->where('name', 'LIKE', '%' . $termo . '%')
+                      ->orWhere('autor', 'LIKE', '%' . $termo . '%')
+                      ->orWhere('genero1', 'LIKE', '%' . $termo . '%')
+                      ->orWhere('genero2', 'LIKE', '%' . $termo . '%');
+            })
+            ->orderBy('dataupload', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('pages.lista-estendida', [
             'genero' => 'Resultados para: ' . $termo,
-            'livros' => $livros
+            'livros' => $livros,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, CloudinaryService $cloudinaryService)
     {
         $livro = Livro::findOrFail($id);
 
@@ -91,43 +93,35 @@ class LivroController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'genero1' => 'required|string',
-            'genero2' => 'nullable|string',
-            'sinopse' => 'required|string',
-            'capa' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'pdf' => 'nullable|mimes:pdf|max:10240',
+            'name' => ['required', 'string', 'max:255'],
+            'genero1' => ['required', 'string', Rule::in(Livro::GENEROS)],
+            'genero2' => ['nullable', 'string', Rule::in(Livro::GENEROS)],
+            'sinopse' => ['required', 'string'],
+            'capa' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ]);
 
-        $livro->name = $validated['name'];
-        $livro->genero1 = $validated['genero1'];
-        $livro->genero2 = $validated['genero2'] ?? '';
-        $livro->sinopse = $validated['sinopse'];
-        $livro->dataatualizacao = now();
+        try {
+            if ($request->hasFile('capa')) {
+                $livro->capa_path = $cloudinaryService->uploadImagem($request->file('capa'), 'livros/capas');
+            }
 
-        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+            if ($request->hasFile('pdf')) {
+                $livro->pdf_path = $cloudinaryService->uploadPdf($request->file('pdf'), $validated['name']);
+            }
 
-        if ($request->hasFile('capa')) {
-            $uploadCapa = $cloudinary->uploadApi()->upload($request->file('capa')->getRealPath(), [
-                'folder' => 'livros/capas'
-            ]);
-            $livro->capa_path = $uploadCapa['secure_url'];
+            $livro->name = $validated['name'];
+            $livro->genero1 = $validated['genero1'];
+            $livro->genero2 = $validated['genero2'] ?? '';
+            $livro->sinopse = $validated['sinopse'];
+            $livro->dataatualizacao = now();
+            $livro->save();
+
+            return back()->with('sucesso', 'Livro atualizado com sucesso!');
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('erro', 'Erro ao atualizar os arquivos do livro. Tente novamente.');
         }
-
-        if ($request->hasFile('pdf')) {
-            $uploadPdf = $cloudinary->uploadApi()->upload($request->file('pdf')->getRealPath(), [
-                'folder' => 'livros/pdfs',
-                'resource_type' => 'auto'
-            ]);
-            $urlOriginal = $uploadPdf['secure_url'];
-            $nomeDoArquivo = Str::slug($validated['name']);
-            $caminhoPdf = str_replace('/upload/', '/upload/fl_attachment:' . $nomeDoArquivo . '/', $urlOriginal);
-            $livro->pdf_path = $caminhoPdf;
-        }
-
-        $livro->save();
-
-        return back()->with('sucesso', 'Livro atualizado com sucesso!');
     }
 
     public function destroy($id)
@@ -145,11 +139,9 @@ class LivroController extends Controller
 
     public function favoritar($id)
     {
-        $livro = \App\Models\Livro::findOrFail($id);
-        $user = \Illuminate\Support\Facades\Auth::user();
+        $livro = Livro::findOrFail($id);
+        Auth::user()->livrosFavoritos()->toggle($livro->id);
 
-        $user->livrosFavoritos()->toggle($livro->id);
-
-        return back()->with('sucesso');
+        return back()->with('sucesso', 'Lista de favoritos atualizada!');
     }
 }

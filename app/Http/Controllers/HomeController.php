@@ -1,9 +1,9 @@
 <?php
+// app/Http/Controllers/HomeController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\Livro;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -13,60 +13,37 @@ class HomeController extends Controller
         $secoes = [];
 
         if (Auth::check()) {
-            $favoritos = Auth::user()->livrosFavoritos()->take(10)->get();
-            
+            $favoritos = Auth::user()
+                ->livrosFavoritos()
+                ->orderBy('dataupload', 'desc')
+                ->take(10)
+                ->get();
+
             if ($favoritos->isNotEmpty()) {
                 $secoes[] = [
                     'titulo' => 'Favoritos',
-                    'livros' => $favoritos
+                    'livros' => $favoritos,
                 ];
             }
         }
 
-        $listaGeneros = [
-            "Ação e Aventura",
-            "Biografia",
-            "Chick-Lit",
-            "Clássicos",
-            "Conto",
-            "Crônica",
-            "Distopia",
-            "Drama",
-            "Ensaio",
-            "Fantasia",
-            "Ficção Científica",
-            "Ficção Histórica",
-            "Ficção Policial",
-            "Horror/Terror",
-            "Infanto-juvenil",
-            "Mistério",
-            "Não Ficção",
-            "Novela",
-            "Poesia",
-            "Realismo Mágico",
-            "Religião e Espiritualidade",
-            "Filosofia",
-            "Romance",
-            "Suspense/Thriller",
-            "Tragédia",
-            "Young Adult (YA)"
-        ];
-        
-        foreach ($listaGeneros as $genero) {
-            $livrosDoGenero = Livro::where('genero1', $genero)
-                                   ->orWhere('genero2', $genero)
-                                   ->orderBy('dataupload', 'desc')
-                                   ->take(10)
-                                   ->get();
+        // Busca única ordenada para evitar 26 queries N+1 no carregamento da Home
+        $todosLivros = Livro::orderBy('dataupload', 'desc')->get();
+
+        foreach (Livro::GENEROS as $genero) {
+            $livrosDoGenero = $todosLivros
+                ->filter(fn (Livro $livro) => $livro->genero1 === $genero || $livro->genero2 === $genero)
+                ->take(10)
+                ->values();
 
             if ($livrosDoGenero->isNotEmpty()) {
                 $secoes[] = [
                     'titulo' => $genero,
-                    'livros' => $livrosDoGenero
+                    'livros' => $livrosDoGenero,
                 ];
             }
         }
 
-        return view('pages.home', compact('secoes')); 
+        return view('pages.home', compact('secoes'));
     }
 }
