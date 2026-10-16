@@ -1,4 +1,5 @@
 <?php
+// app/Models/Livro.php
 
 namespace App\Models;
 
@@ -10,10 +11,38 @@ class Livro extends Model
 {
     public $timestamps = false;
 
+    public const GENEROS = [
+        "Ação e Aventura",
+        "Biografia",
+        "Chick-Lit",
+        "Clássicos",
+        "Conto",
+        "Crônica",
+        "Distopia",
+        "Drama",
+        "Ensaio",
+        "Fantasia",
+        "Ficção Científica",
+        "Ficção Histórica",
+        "Ficção Policial",
+        "Horror/Terror",
+        "Infanto-juvenil",
+        "Mistério",
+        "Não Ficção",
+        "Novela",
+        "Poesia",
+        "Realismo Mágico",
+        "Religião e Espiritualidade",
+        "Filosofia",
+        "Romance",
+        "Suspense/Thriller",
+        "Tragédia",
+        "Young Adult (YA)",
+    ];
+
     protected $fillable = [
         'name',
         'autor',
-        'password',
         'genero1',
         'genero2',
         'capa_path',

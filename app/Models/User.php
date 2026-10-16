@@ -1,4 +1,5 @@
 <?php
+// app/Models/User.php
 
 namespace App\Models;
 
@@ -20,6 +21,11 @@ class User extends Authenticatable
         'dataedicao',
         'foto_perfil_path',
         'bio',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     public function livrosCadastrados(): HasMany
