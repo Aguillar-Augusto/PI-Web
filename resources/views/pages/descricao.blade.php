@@ -58,9 +58,6 @@
             @endif
 
             @auth
-                @php
-                    $isFavorito = Auth::user()->livrosFavoritos->contains($livro->id);
-                @endphp
                 
                 <form action="{{ route('livros.favoritar', $livro->id) }}" method="POST" class="mb-3">
                     @csrf
