@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/HomeController.php
 
 namespace App\Http\Controllers;
 
@@ -27,7 +26,6 @@ class HomeController extends Controller
             }
         }
 
-        // Busca única ordenada para evitar 26 queries N+1 no carregamento da Home
         $todosLivros = Livro::orderBy('dataupload', 'desc')->get();
 
         foreach (Livro::GENEROS as $genero) {

@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/ListaGeneroController.php
 
 namespace App\Http\Controllers;
 
