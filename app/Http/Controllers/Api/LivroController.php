@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Api/LivroController.php
 
 namespace App\Http\Controllers\Api;
 

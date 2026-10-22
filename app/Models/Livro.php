@@ -1,5 +1,4 @@
 <?php
-// app/Models/Livro.php
 
 namespace App\Models;
 
